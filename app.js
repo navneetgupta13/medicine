@@ -3,11 +3,17 @@ var express = require('express');
 var helmet = require('helmet');
 var logger = require('./utils/log.js');
 var path = require('path');
+var session = require('express-session');
 
 
 var app = express();
 var port = process.env.PORT || 3000;
 
+app.use(session({
+    secret: 'navneet gupta medicine',
+    resave: true,
+    saveUninitialized: true
+}));
 app.use(helmet.hidePoweredBy({ setTo: 'PHP/5.4.0' }));
 
 app.use(bodyParser.json());

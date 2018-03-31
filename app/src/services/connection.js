@@ -20,6 +20,7 @@ const query = function(table = "users", action = "get", val = {}) {
             const data = JSON.parse(xhttp.responseText);
             if (data.status === 200) {
                 resolve(data.data);
+                console.log(data.data)
             } else {
                 console.error('Response is O.K. but something went wrong on the server');
                 console.error('status: ', data.status, ', message: ', data.message);

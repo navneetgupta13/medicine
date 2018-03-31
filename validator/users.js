@@ -1,7 +1,252 @@
 exports.create = {
 	properties: {
-		first_name: {
+		type: {
 			required: true,
+			allowEmpty: false,
+			enum: ['user', 'ngo'],
+			maxLength: 100,
+			messages: {
+				required: 'user type is a required field.',
+				allowEmpty: 'user type should not be empty.',
+				enum: 'user type should be either \'user\' or \'ngo\'',
+				type: 'user type should be of string type.',
+				maxLength: 'user type cannot be longer than 100 characters.'
+			}
+		},
+		email: {
+			required: true,
+			allowEmpty: false,
+			format: 'email',
+			maxLength: 100,
+			messages: {
+				required: 'email is a required field.',
+				allowEmpty: 'email should not be empty.',
+				format: 'wrong email format.',
+				maxLength: 'email cannot be longer than 100 characters.'
+			}
+		},
+		phone: {
+			required: true,
+			allowEmpty: false,
+			type: 'number',
+			maxLength: 10,
+			minLength: 10,
+			messages: {
+				required: 'phone is a required field.',
+				allowEmpty: 'phone should not be empty.',
+				type: 'phone should contains only numbers',
+				maxLength: 'phone should contains only 10 digits',
+				minLength: 'phone should contains only 10 digits',
+			}
+		},
+		pincode: {
+			required: true,
+			allowEmpty: false,
+			type: 'number',
+			maxLength: 6,
+			minLength: 6,
+			messages: {
+				required: 'pincode is a required field.',
+				allowEmpty: 'pincode should not be empty.',
+				type: 'pincode should contains only numbers',
+				maxLength: 'pincode should contains only 6 digits',
+				minLength: 'pincode should contains only 6 digits',
+			}
+		},
+		country: {
+			required: true,
+			enum: ['india'],
+			messages: {
+				required: 'country is a required field.',
+				enum: 'country should be india.',
+			}
+		},
+		state: {
+			required: true,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'state is a required field.',
+				allowEmpty: 'state should not be empty.',
+				type: 'state should be of string type.',
+				maxLength: 'state cannot be longer than 100 characters.'
+			}
+		},
+		address: {
+			required: true,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'address is a required field.',
+				allowEmpty: 'address should not be empty.',
+				type: 'address should be of string type.',
+				maxLength: 'address cannot be longer than 100 characters.'
+			}
+		},
+		password: {
+			required: true,
+			allowEmpty: false,
+			pattern: '^[a-z]+$',
+			minLength: 5,
+			maxLength: 100,
+			messages: {
+				required: 'password is a required field.',
+				allowEmpty: 'password should not be empty.',
+				pattern: 'password should congtains only alphabates',
+				minLength: 'password should be atleast 5 characters.',
+				maxLength: 'password cannot be longer than 100 characters.'
+			}
+		}
+	},
+	remainingProps: {
+		user: {
+			first_name: {
+				required: true,
+				allowEmpty: false,
+				type: 'string',
+				maxLength: 100,
+				messages: {
+					required: 'frist name is a required field.',
+					allowEmpty: 'frist name should not be empty.',
+					type: 'frist name should be of string type.',
+					maxLength: 'frist name cannot be longer than 100 characters.'
+				}
+			},
+			last_name: {
+				required: true,
+				allowEmpty: false,
+				type: 'string',
+				maxLength: 100,
+				messages: {
+					required: 'last name is a required field.',
+					allowEmpty: 'last name should not be empty.',
+					type: 'last name should be of string type.',
+					maxLength: 'last name cannot be longer than 100 characters.'
+				}
+			},
+		},
+		ngo: {
+			org: {
+				required: true,
+				allowEmpty: false,
+				type: 'string',
+				maxLength: 100,
+				messages: {
+					required: 'ngo name is a required field.',
+					allowEmpty: 'ngo name should not be empty.',
+					type: 'ngo name should be of string type.',
+					maxLength: 'ngo name cannot be longer than 100 characters.'
+				}
+			},
+		}
+	}
+};
+
+exports.update = {
+	properties: {
+		type: {
+			required: false,
+			allowEmpty: false,
+			enum: ['user', 'ngo'],
+			maxLength: 100,
+			messages: {
+				required: 'user type is a required field.',
+				allowEmpty: 'user type should not be empty.',
+				enum: 'user type should be either \'user\' or \'ngo\'',
+				type: 'user type should be of string type.',
+				maxLength: 'user type cannot be longer than 100 characters.'
+			}
+		},
+		email: {
+			required: false,
+			allowEmpty: false,
+			format: 'email',
+			maxLength: 100,
+			messages: {
+				required: 'email is a required field.',
+				allowEmpty: 'email should not be empty.',
+				format: 'wrong email format.',
+				maxLength: 'email cannot be longer than 100 characters.'
+			}
+		},
+		phone: {
+			required: false,
+			allowEmpty: false,
+			type: 'number',
+			maxLength: 10,
+			minLength: 10,
+			messages: {
+				required: 'phone is a required field.',
+				allowEmpty: 'phone should not be empty.',
+				type: 'phone should contains only numbers',
+				maxLength: 'phone should contains only 10 digits',
+				minLength: 'phone should contains only 10 digits',
+			}
+		},
+		pincode: {
+			required: false,
+			allowEmpty: false,
+			type: 'number',
+			maxLength: 6,
+			minLength: 6,
+			messages: {
+				required: 'pincode is a required field.',
+				allowEmpty: 'pincode should not be empty.',
+				type: 'pincode should contains only numbers',
+				maxLength: 'pincode should contains only 6 digits',
+				minLength: 'pincode should contains only 6 digits',
+			}
+		},
+		country: {
+			required: false,
+			enum: ['india'],
+			messages: {
+				required: 'country is a required field.',
+				enum: 'country should be india.',
+			}
+		},
+		state: {
+			required: false,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'state is a required field.',
+				allowEmpty: 'state should not be empty.',
+				type: 'state should be of string type.',
+				maxLength: 'state cannot be longer than 100 characters.'
+			}
+		},
+		address: {
+			required: false,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'address is a required field.',
+				allowEmpty: 'address should not be empty.',
+				type: 'address should be of string type.',
+				maxLength: 'address cannot be longer than 100 characters.'
+			}
+		},
+		password: {
+			required: false,
+			allowEmpty: false,
+			pattern: /^[a-z]+$/,
+			minLength: 5,
+			maxLength: 100,
+			messages: {
+				required: 'password is a required field.',
+				allowEmpty: 'password should not be empty.',
+				pattern: 'password should congtains only alphabates',
+				minLength: 'password should be atleast 5 characters.',
+				maxLength: 'password cannot be longer than 100 characters.'
+			}
+		},
+		first_name: {
+			required: false,
 			allowEmpty: false,
 			type: 'string',
 			maxLength: 100,
@@ -13,102 +258,58 @@ exports.create = {
 			}
 		},
 		last_name: {
-			required: true,
+			required: false,
 			allowEmpty: false,
 			type: 'string',
 			maxLength: 100,
 			messages: {
-				required: 'frist name is a required field.',
-				allowEmpty: 'frist name should not be empty.',
-				type: 'frist name should be of string type.',
-				maxLength: 'frist name cannot be longer than 100 characters.'
+				required: 'last name is a required field.',
+				allowEmpty: 'last name should not be empty.',
+				type: 'last name should be of string type.',
+				maxLength: 'last name cannot be longer than 100 characters.'
 			}
 		},
+		org: {
+			required: false,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'ngo name is a required field.',
+				allowEmpty: 'ngo name should not be empty.',
+				type: 'ngo name should be of string type.',
+				maxLength: 'ngo name cannot be longer than 100 characters.'
+			}
+		},
+	},
+};
+
+exports.login = {
+	properties: {
 		email: {
 			required: true,
-			allowEmpty: false,
-			type: 'string',
-			maxLength: 100,
+			// allowEmpty: false,
+			// format: 'email',
+			// maxLength: 100,
 			messages: {
-				required: 'frist name is a required field.',
-				allowEmpty: 'frist name should not be empty.',
-				type: 'frist name should be of string type.',
-				maxLength: 'frist name cannot be longer than 100 characters.'
+				required: 'email is a required field.',
+				allowEmpty: 'email should not be empty.',
+				format: 'wrong email format.',
+				maxLength: 'email cannot be longer than 100 characters.'
 			}
 		},
-		phone: {
+		password: {
 			required: true,
-			allowEmpty: false,
-			type: 'string',
-			maxLength: 100,
+			// allowEmpty: false,
+			// pattern: /^[a-z]+$/,
+			// minLength: 5,
+			// maxLength: 100,
 			messages: {
-				required: 'frist name is a required field.',
-				allowEmpty: 'frist name should not be empty.',
-				type: 'frist name should be of string type.',
-				maxLength: 'frist name cannot be longer than 100 characters.'
-			}
-		},
-	},
-};
-exports.update = {
-	properties: {
-		id: {
-			required: true,
-			allowEmpty: false,
-			type: 'integer',
-			messages: {
-				required: 'ID is a required field.',
-				allowEmpty: 'ID should not be empty.',
-				type: 'ID should be of integer type.',
-			}
-		},
-
-		name: {
-			required: true,
-			allowEmpty: false,
-			type: 'string',
-			maxLength: 512,
-			messages: {
-				required: 'Name is a required field.',
-				allowEmpty: 'Name should not be empty.',
-				type: 'Name should be of string type.',
-				maxLength: 'Name cannot be longer than 512 characters.'
-			}
-		},
-
-		description: {
-			required: true,
-			allowEmpty: false,
-			type: 'string',
-			messages: {
-				required: 'Description is a required field.',
-				allowEmpty: 'Description should not be empty.',
-				type: 'Description should be of string type.'
-			}
-		},
-
-		price: {
-			required: true,
-			allowEmpty: false,
-			type: 'number',
-			messages: {
-				required: 'Price is a required field.',
-				allowEmpty: 'Price should not be empty.',
-				type: 'Price should be of number type.'
-			}
-		},
-	},
-};
-exports.remove = {
-	properties: {
-		email_id: {
-			required: true,
-			allowEmpty: false,
-			type: 'string',
-			messages: {
-				required: 'Email Id is a required field.',
-				allowEmpty: 'Email Id should not be empty.',
-				type: 'Email Id should be of string type.',
+				required: 'password is a required field.',
+				allowEmpty: 'password should not be empty.',
+				pattern: 'password should congtains only alphabates',
+				minLength: 'password should be atleast 5 characters.',
+				maxLength: 'password cannot be longer than 100 characters.'
 			}
 		},
 	},
