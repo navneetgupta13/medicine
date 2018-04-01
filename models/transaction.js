@@ -117,6 +117,29 @@ function detail(req, res) {
     });
 }
 
+function getAreaData(req, res) {
+    if (typeof req.session.user_id === 'undefined') {
+        return res.send({
+            'status': 401,
+            'message': 'User is not logged in',
+        });
+    }
+    dbConnection.query(`SELECT users.pincode, SUM(transaction_detail.quantity) as totalMedicine FROM (select id, owner from transaction WHERE state = "PENDING") as temp_table
+    LEFT JOIN users ON temp_table.owner = users.id 
+    RIGHT JOIN transaction_detail ON temp_table.id = transaction_detail.transaction GROUP BY users.pincode ORDER BY totalMedicine DESC`, [], function (err, results) {
+        if (err) {
+            logger.info(err, __filename, null, req.originalUrl);
+            return sendMessage(res);
+        }
+        res.send({
+            'status': 200,
+            'message': 'Transaction list',
+            'data': results,
+        });
+    });
+}
+
 exports.create = create;
 exports.get = get;
 exports.detail = detail;
+exports.getAreaData = getAreaData;
