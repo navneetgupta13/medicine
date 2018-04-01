@@ -38,13 +38,13 @@ function create (req, res) {
 }
 
 function get (req, res) {
-    if (!req.session.email) {
+    if (typeof req.session.user_id === 'undefined') {
         return res.send({
             'status': 401,
             'message': 'User is not logged in',
         });
     }
-    dbConnection.query('SELECT org, first_name, last_name, phone FROM users WHERE is_deleted = 0 && email = ?', [req.session.email], function (err, results) {
+    dbConnection.query('SELECT org, first_name, last_name, phone FROM users WHERE is_deleted = 0 && id = ?', [req.session.user_id], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -62,7 +62,7 @@ function get (req, res) {
 }
 
 function update (req, res) {
-    if (!req.session.email) {
+    if (typeof req.session.user_id === 'undefined') {
         return res.send({
             'status': 401,
             'message': 'User is not logged in',
@@ -75,7 +75,7 @@ function update (req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query('UPDATE users SET ? WHERE id = ? && is_deleted = 0', [req.body.data, req.session.email], function (err, updateResult) {
+    dbConnection.query('UPDATE users SET ? WHERE id = ? && is_deleted = 0', [req.body.data, req.session.user_id], function (err, updateResult) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -98,13 +98,13 @@ function update (req, res) {
 }
 
 function remove (req, res) {
-    if (!req.session.email) {
+    if (typeof req.session.user_id === 'undefined') {
         return res.send({
             'status': 401,
             'message': 'User is not logged in',
         });
     }
-    dbConnection.query('UPDATE users SET is_deleted = 1 WHERE email = ?', [req.session.email], function(err, updateResult) {
+    dbConnection.query('UPDATE users SET is_deleted = 1 WHERE id = ?', [req.session.user_id], function(err, updateResult) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -134,7 +134,7 @@ function login (req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query('SELECT password FROM users WHERE email = ? && is_deleted = 0', [req.body.data.email], function(err, results) {
+    dbConnection.query('SELECT password, id FROM users WHERE email = ? && is_deleted = 0', [req.body.data.email], function(err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -148,6 +148,7 @@ function login (req, res) {
                 'message': 'Either email or password is wrong.',
             });
         }
+        req.session.user_id = results[0].id;
         req.session.email = req.body.data.email;
         return res.send({
             'status': 200,
