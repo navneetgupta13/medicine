@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 01, 2018 at 05:53 PM
+-- Generation Time: Apr 02, 2018 at 07:43 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -121,8 +121,10 @@ CREATE TABLE `transaction` (
 --
 
 CREATE TABLE `transaction_detail` (
+  `id` int(11) NOT NULL,
   `transaction` int(11) NOT NULL,
   `medicine` int(11) NOT NULL,
+  `expiry` date DEFAULT NULL,
   `quantity` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -179,6 +181,7 @@ ALTER TABLE `transaction`
 -- Indexes for table `transaction_detail`
 --
 ALTER TABLE `transaction_detail`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `transaction` (`transaction`),
   ADD KEY `medicine` (`medicine`);
 
@@ -203,12 +206,17 @@ ALTER TABLE `medicine`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+--
+-- AUTO_INCREMENT for table `transaction_detail`
+--
+ALTER TABLE `transaction_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- Constraints for dumped tables
 --
