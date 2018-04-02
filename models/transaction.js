@@ -97,6 +97,34 @@ function get(req, res) {
     });
 }
 
+function received(req, res) {
+    if (typeof req.session.user_id === 'undefined') {
+        return res.send({
+            'status': 401,
+            'message': 'User is not logged in',
+        });
+    }
+    var result = revalidator.validate(req.body.data, validator_transaction.received, { additionalProperties: false });
+    if (!result.valid) {
+        var errorThrown = Utils.replace_(result.errors);
+        logger.info(errorThrown, __filename, null, req.originalUrl);
+        return res.send({ 'status': 400, 'message': errorThrown });
+    }
+    dbConnection.query('UPDATE `transaction` SET `state`="RECEIVED" WHERE id = ?', [req.body.data.transaction_id], function (err, results) {
+        if (err) {
+            logger.info(err, __filename, null, req.originalUrl);
+            return sendMessage(res);
+        }
+        if (results.affectedRows) {
+            return res.send({
+                'status': 200,
+                'message': 'Transaction Received!',
+            });
+        }
+        sendMessage(res);
+    });
+}
+
 function detail(req, res) {
     if (typeof req.session.user_id === 'undefined') {
         return res.send({
@@ -263,6 +291,7 @@ function getAreaData(req, res) {
 
 exports.create = create;
 exports.get = get;
+exports.received = received;
 exports.detail = detail;
 exports.detailAdd = detailAdd;
 exports.detailRemove = detailRemove;

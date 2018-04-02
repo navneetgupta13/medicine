@@ -64,6 +64,21 @@ exports.detail = {
     },
 };
 
+exports.received = {
+	properties: {
+		transaction_id: {
+			required: true,
+            allowEmpty: false,
+            type: 'integer',
+			messages: {
+				required: 'transaction_id is a required field.',
+				allowEmpty: 'transaction_id should not be empty.',
+				type: 'transaction_id should be of integer type.',
+			},
+        },
+    },
+};
+
 exports.detailAdd = {
 	properties: {
 		transaction_id: {
