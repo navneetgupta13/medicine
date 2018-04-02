@@ -138,7 +138,10 @@ function detail(req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query('SELECT * FROM (select id as transaction_detail_id, medicine, transaction, expiry, quantity from transaction_detail WHERE transaction = ?) as temp_table INNER JOIN medicine ON temp_table.medicine = medicine.id INNER JOIN transaction ON temp_table.transaction = transaction.id order by medicine.name ASC', [req.body.data.transaction_id], function (err, results) {
+    dbConnection.query(`SELECT * FROM
+    ((SELECT id as transaction_detail_id, medicine, transaction, expiry, quantity FROM transaction_detail WHERE transaction = ?) as temp_table
+    INNER JOIN medicine ON temp_table.medicine = medicine.id)
+    INNER JOIN transaction ON temp_table.transaction = transaction.id ORDER BY medicine.name ASC`, [req.body.data.transaction_id], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return sendMessage(res);
@@ -204,8 +207,9 @@ function detailRemove(req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query(`SELECT transaction.id FROM (SELECT * FROM transaction_detail where id = ?) as tem_table
-    LEFT JOIN transaction ON tem_table.transaction = transaction.id where transaction.state = "PENDING" && transaction.owner = ?`, [req.body.data.transaction_detail_id, req.session.user_id], function (err, results) {
+    dbConnection.query(`SELECT transaction.id FROM
+    (SELECT * FROM transaction_detail where id = ?) as tem_table
+    LEFT JOIN transaction ON tem_table.transaction = transaction.id WHERE transaction.state = "PENDING" && transaction.owner = ?`, [req.body.data.transaction_detail_id, req.session.user_id], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return sendMessage(res);
@@ -274,9 +278,40 @@ function getAreaData(req, res) {
             'message': 'User is not logged in',
         });
     }
-    dbConnection.query(`SELECT users.pincode, SUM(transaction_detail.quantity) as totalMedicine FROM (select id, owner from transaction WHERE state = "PENDING") as temp_table
-    LEFT JOIN users ON temp_table.owner = users.id 
-    RIGHT JOIN transaction_detail ON temp_table.id = transaction_detail.transaction GROUP BY users.pincode ORDER BY totalMedicine DESC`, [], function (err, results) {
+    dbConnection.query(`SELECT users.pincode, SUM(transaction_detail.quantity) as totalMedicine FROM
+    ((SELECT id, owner FROM transaction WHERE state = "PENDING") as temp_table
+    LEFT JOIN users ON temp_table.owner = users.id)
+    INNER JOIN transaction_detail ON temp_table.id = transaction_detail.transaction
+    GROUP BY users.pincode ORDER BY totalMedicine DESC`, [], function (err, results) {
+        if (err) {
+            logger.info(err, __filename, null, req.originalUrl);
+            return sendMessage(res);
+        }
+        res.send({
+            'status': 200,
+            'message': 'Transaction list',
+            'data': results,
+        });
+    });
+}
+
+function getAreaDataDetail(req, res) {
+    if (typeof req.session.user_id === 'undefined') {
+        return res.send({
+            'status': 401,
+            'message': 'User is not logged in',
+        });
+    }
+    var result = revalidator.validate(req.body.data, validator_transaction.getAreaDataDetail, { additionalProperties: false });
+    if (!result.valid) {
+        var errorThrown = Utils.replace_(result.errors);
+        logger.info(errorThrown, __filename, null, req.originalUrl);
+        return res.send({ 'status': 400, 'message': errorThrown });
+    }
+    dbConnection.query(`SELECT transaction_table.*, SUM(transaction_detail.quantity) as totalMedicine
+    FROM (SELECT users_table.*, transaction.id as transaction_id FROM (SELECT id, first_name, last_name, address, state, pincode, email, phone FROM users WHERE pincode = ? && type = "user") as users_table
+    INNER JOIN transaction ON transaction.owner = users_table.id WHERE transaction.state = "PENDING") as transaction_table
+    INNER JOIN transaction_detail ON transaction_table.transaction_id = transaction_detail.transaction GROUP BY transaction_table.transaction_id ORDER BY totalMedicine DESC`, [req.body.data.pincode], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return sendMessage(res);
@@ -296,3 +331,4 @@ exports.detail = detail;
 exports.detailAdd = detailAdd;
 exports.detailRemove = detailRemove;
 exports.getAreaData = getAreaData;
+exports.getAreaDataDetail = getAreaDataDetail;
