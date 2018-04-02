@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2018 at 07:43 PM
+-- Generation Time: Apr 02, 2018 at 09:06 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -109,10 +109,19 @@ INSERT INTO `medicine` (`id`, `description`, `name`, `company`, `form`, `dose`) 
 CREATE TABLE `transaction` (
   `id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `state` enum('PENDING','RECIEVED','','') NOT NULL DEFAULT 'PENDING',
+  `state` enum('PENDING','RECEIVED','','') NOT NULL DEFAULT 'PENDING',
   `owner` int(11) NOT NULL,
   `recipient` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`id`, `time`, `state`, `owner`, `recipient`) VALUES
+(79, '2018-04-02 18:49:05', 'RECEIVED', 3, NULL),
+(80, '2018-04-02 18:50:00', 'PENDING', 7, NULL),
+(81, '2018-04-02 18:51:17', 'PENDING', 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -127,6 +136,20 @@ CREATE TABLE `transaction_detail` (
   `expiry` date DEFAULT NULL,
   `quantity` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `transaction_detail`
+--
+
+INSERT INTO `transaction_detail` (`id`, `transaction`, `medicine`, `expiry`, `quantity`) VALUES
+(11, 79, 3, '2018-03-02', 10),
+(12, 79, 5, '2018-03-02', 20),
+(13, 79, 10, '2018-03-02', 30),
+(14, 79, 20, '2018-03-02', 40),
+(15, 80, 7, '2018-03-02', 10),
+(16, 80, 16, '2018-03-02', 10),
+(17, 81, 7, '2018-03-02', 10),
+(18, 81, 16, '2018-03-02', 10);
 
 -- --------------------------------------------------------
 
@@ -156,7 +179,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `email`, `phone`, `address`, `pincode`, `type`, `org`, `password`, `time`, `last_name`, `state`, `country`, `is_deleted`) VALUES
-(3, 'navneet', 'navneetxyz@gmail.com', '9967845623', 'flat 204', '234567', 'user', NULL, 'password', '2018-04-01 10:08:14', 'gupta', 'up', 'india', 0);
+(3, 'navneet', 'navneet@gmail.com', '9988899888', 'flat 204', '201301', 'user', NULL, 'password', '2018-04-01 10:08:14', 'gupta', 'up', 'india', 0),
+(7, 'himani', 'himani@gmail.com', '9815022222', 'flat 204, tower 14, lotus boulevard', '201302', 'user', NULL, 'password', '2018-04-02 18:46:10', 'gupta', 'up', 'india', 0),
+(8, 'rks', 'rks@gmail.com', '9815038550', 'flat 204, tower 14, lotus boulevard', '201301', 'user', NULL, 'password', '2018-04-02 18:50:59', 'rks', 'up', 'india', 0);
 
 --
 -- Indexes for dumped tables
@@ -206,17 +231,17 @@ ALTER TABLE `medicine`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 --
 -- AUTO_INCREMENT for table `transaction_detail`
 --
 ALTER TABLE `transaction_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- Constraints for dumped tables
 --
