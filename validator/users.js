@@ -98,50 +98,20 @@ exports.create = {
 				minLength: 'password should be atleast 5 characters.',
 				maxLength: 'password cannot be longer than 100 characters.'
 			}
-		}
-	},
-	remainingProps: {
-		user: {
-			first_name: {
-				required: true,
-				allowEmpty: false,
-				type: 'string',
-				maxLength: 100,
-				messages: {
-					required: 'frist name is a required field.',
-					allowEmpty: 'frist name should not be empty.',
-					type: 'frist name should be of string type.',
-					maxLength: 'frist name cannot be longer than 100 characters.'
-				}
-			},
-			last_name: {
-				required: true,
-				allowEmpty: false,
-				type: 'string',
-				maxLength: 100,
-				messages: {
-					required: 'last name is a required field.',
-					allowEmpty: 'last name should not be empty.',
-					type: 'last name should be of string type.',
-					maxLength: 'last name cannot be longer than 100 characters.'
-				}
-			},
 		},
-		ngo: {
-			org: {
-				required: true,
-				allowEmpty: false,
-				type: 'string',
-				maxLength: 100,
-				messages: {
-					required: 'ngo name is a required field.',
-					allowEmpty: 'ngo name should not be empty.',
-					type: 'ngo name should be of string type.',
-					maxLength: 'ngo name cannot be longer than 100 characters.'
-				}
-			},
-		}
-	}
+		name: {
+			required: true,
+			allowEmpty: false,
+			type: 'string',
+			maxLength: 100,
+			messages: {
+				required: 'name is a required field.',
+				allowEmpty: 'name should not be empty.',
+				type: 'name should be of string type.',
+				maxLength: 'name cannot be longer than 100 characters.'
+			}
+		},
+	},
 };
 
 exports.update = {
@@ -245,40 +215,16 @@ exports.update = {
 				maxLength: 'password cannot be longer than 100 characters.'
 			}
 		},
-		first_name: {
+		name: {
 			required: false,
 			allowEmpty: false,
 			type: 'string',
 			maxLength: 100,
 			messages: {
-				required: 'frist name is a required field.',
-				allowEmpty: 'frist name should not be empty.',
-				type: 'frist name should be of string type.',
-				maxLength: 'frist name cannot be longer than 100 characters.'
-			}
-		},
-		last_name: {
-			required: false,
-			allowEmpty: false,
-			type: 'string',
-			maxLength: 100,
-			messages: {
-				required: 'last name is a required field.',
-				allowEmpty: 'last name should not be empty.',
-				type: 'last name should be of string type.',
-				maxLength: 'last name cannot be longer than 100 characters.'
-			}
-		},
-		org: {
-			required: false,
-			allowEmpty: false,
-			type: 'string',
-			maxLength: 100,
-			messages: {
-				required: 'ngo name is a required field.',
-				allowEmpty: 'ngo name should not be empty.',
-				type: 'ngo name should be of string type.',
-				maxLength: 'ngo name cannot be longer than 100 characters.'
+				required: 'name is a required field.',
+				allowEmpty: 'name should not be empty.',
+				type: 'name should be of string type.',
+				maxLength: 'name cannot be longer than 100 characters.'
 			}
 		},
 	},

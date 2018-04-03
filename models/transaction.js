@@ -110,7 +110,8 @@ function received(req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query('UPDATE `transaction` SET `state`="RECEIVED" WHERE id = ?', [req.body.data.transaction_id], function (err, results) {
+    time = Date.now();
+    dbConnection.query('UPDATE `transaction` SET `state`="RECEIVED", `received_time`= LOCALTIMESTAMP() WHERE id = ? && state="PENDING"', [req.body.data.transaction_id], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return sendMessage(res);
@@ -271,64 +272,9 @@ function detailRemove(req, res) {
     });
 }
 
-function getAreaData(req, res) {
-    if (typeof req.session.user_id === 'undefined') {
-        return res.send({
-            'status': 401,
-            'message': 'User is not logged in',
-        });
-    }
-    dbConnection.query(`SELECT users.pincode, SUM(transaction_detail.quantity) as totalMedicine FROM
-    ((SELECT id, owner FROM transaction WHERE state = "PENDING") as temp_table
-    LEFT JOIN users ON temp_table.owner = users.id)
-    INNER JOIN transaction_detail ON temp_table.id = transaction_detail.transaction
-    GROUP BY users.pincode ORDER BY totalMedicine DESC`, [], function (err, results) {
-        if (err) {
-            logger.info(err, __filename, null, req.originalUrl);
-            return sendMessage(res);
-        }
-        res.send({
-            'status': 200,
-            'message': 'Transaction list',
-            'data': results,
-        });
-    });
-}
-
-function getAreaDataDetail(req, res) {
-    if (typeof req.session.user_id === 'undefined') {
-        return res.send({
-            'status': 401,
-            'message': 'User is not logged in',
-        });
-    }
-    var result = revalidator.validate(req.body.data, validator_transaction.getAreaDataDetail, { additionalProperties: false });
-    if (!result.valid) {
-        var errorThrown = Utils.replace_(result.errors);
-        logger.info(errorThrown, __filename, null, req.originalUrl);
-        return res.send({ 'status': 400, 'message': errorThrown });
-    }
-    dbConnection.query(`SELECT transaction_table.*, SUM(transaction_detail.quantity) as totalMedicine
-    FROM (SELECT users_table.*, transaction.id as transaction_id FROM (SELECT id, first_name, last_name, address, state, pincode, email, phone FROM users WHERE pincode = ? && type = "user") as users_table
-    INNER JOIN transaction ON transaction.owner = users_table.id WHERE transaction.state = "PENDING") as transaction_table
-    INNER JOIN transaction_detail ON transaction_table.transaction_id = transaction_detail.transaction GROUP BY transaction_table.transaction_id ORDER BY totalMedicine DESC`, [req.body.data.pincode], function (err, results) {
-        if (err) {
-            logger.info(err, __filename, null, req.originalUrl);
-            return sendMessage(res);
-        }
-        res.send({
-            'status': 200,
-            'message': 'Transaction list',
-            'data': results,
-        });
-    });
-}
-
 exports.create = create;
 exports.get = get;
 exports.received = received;
 exports.detail = detail;
 exports.detailAdd = detailAdd;
 exports.detailRemove = detailRemove;
-exports.getAreaData = getAreaData;
-exports.getAreaDataDetail = getAreaDataDetail;

@@ -7,12 +7,6 @@ var Utils = require('../utils/utils');
 function create (req, res) {
     const item = {};
     item.properties = validator_users.create.properties;
-    if (req.body.data.type === 'user' || req.body.data.type === 'ngo') {
-        item.properties = JSON.parse(JSON.stringify(validator_users.create.properties));
-        for (let obj in validator_users.create.remainingProps[req.body.data.type]) {
-            item.properties[obj] = JSON.parse(JSON.stringify(validator_users.create.remainingProps[req.body.data.type][obj]));
-        }
-    }
     var result = revalidator.validate(req.body.data, item, { additionalProperties: false });
     if (!result.valid) {
         var errorThrown = Utils.replace_(result.errors);
@@ -44,7 +38,7 @@ function get (req, res) {
             'message': 'User is not logged in',
         });
     }
-    dbConnection.query('SELECT org, first_name, last_name, phone FROM users WHERE is_deleted = 0 && id = ?', [req.session.user_id], function (err, results) {
+    dbConnection.query('SELECT name, phone, address, state, pincode, type, email FROM users WHERE is_deleted = 0 && id = ?', [req.session.user_id], function (err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -134,7 +128,7 @@ function login (req, res) {
         logger.info(errorThrown, __filename, null, req.originalUrl);
         return res.send({ 'status': 400, 'message': errorThrown });
     }
-    dbConnection.query('SELECT password, id FROM users WHERE email = ? && is_deleted = 0', [req.body.data.email], function(err, results) {
+    dbConnection.query('SELECT * FROM users WHERE email = ? && is_deleted = 0', [req.body.data.email], function(err, results) {
         if (err) {
             logger.info(err, __filename, null, req.originalUrl);
             return res.send({
@@ -150,9 +144,13 @@ function login (req, res) {
         }
         req.session.user_id = results[0].id;
         req.session.email = req.body.data.email;
+        delete results[0].password;
+        delete results[0].is_deleted;
+        delete results[0].time;
         return res.send({
             'status': 200,
             'message': 'User logged in successfully!',
+            'data': results[0],
         });
     });
 }

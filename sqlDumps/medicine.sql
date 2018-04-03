@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2018 at 09:06 PM
+-- Generation Time: Apr 03, 2018 at 08:04 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -111,17 +111,18 @@ CREATE TABLE `transaction` (
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `state` enum('PENDING','RECEIVED','','') NOT NULL DEFAULT 'PENDING',
   `owner` int(11) NOT NULL,
-  `recipient` int(11) DEFAULT NULL
+  `recipient` int(11) DEFAULT NULL,
+  `received_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `transaction`
 --
 
-INSERT INTO `transaction` (`id`, `time`, `state`, `owner`, `recipient`) VALUES
-(79, '2018-04-02 18:49:05', 'RECEIVED', 3, NULL),
-(80, '2018-04-02 18:50:00', 'PENDING', 7, NULL),
-(81, '2018-04-02 18:51:17', 'PENDING', 8, NULL);
+INSERT INTO `transaction` (`id`, `time`, `state`, `owner`, `recipient`, `received_time`) VALUES
+(79, '2018-04-02 18:49:05', 'RECEIVED', 3, NULL, '0000-00-00 00:00:00'),
+(80, '2018-04-02 18:50:00', 'RECEIVED', 7, NULL, '2018-04-03 18:02:28'),
+(81, '2018-04-02 18:51:17', 'RECEIVED', 8, NULL, '2018-04-03 18:00:55');
 
 -- --------------------------------------------------------
 
@@ -159,16 +160,14 @@ INSERT INTO `transaction_detail` (`id`, `transaction`, `medicine`, `expiry`, `qu
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(10) NOT NULL,
   `address` varchar(100) NOT NULL,
   `pincode` varchar(6) NOT NULL,
   `type` enum('admin','user','ngo') NOT NULL DEFAULT 'user',
-  `org` varchar(100) DEFAULT NULL,
   `password` varchar(100) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_name` varchar(100) NOT NULL,
   `state` varchar(100) NOT NULL,
   `country` varchar(100) NOT NULL DEFAULT 'india',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0'
@@ -178,10 +177,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `first_name`, `email`, `phone`, `address`, `pincode`, `type`, `org`, `password`, `time`, `last_name`, `state`, `country`, `is_deleted`) VALUES
-(3, 'navneet', 'navneet@gmail.com', '9988899888', 'flat 204', '201301', 'user', NULL, 'password', '2018-04-01 10:08:14', 'gupta', 'up', 'india', 0),
-(7, 'himani', 'himani@gmail.com', '9815022222', 'flat 204, tower 14, lotus boulevard', '201302', 'user', NULL, 'password', '2018-04-02 18:46:10', 'gupta', 'up', 'india', 0),
-(8, 'rks', 'rks@gmail.com', '9815038550', 'flat 204, tower 14, lotus boulevard', '201301', 'user', NULL, 'password', '2018-04-02 18:50:59', 'rks', 'up', 'india', 0);
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `pincode`, `type`, `password`, `time`, `state`, `country`, `is_deleted`) VALUES
+(3, 'navneet', 'navneet@gmail.com', '9988899888', 'flat 204', '201301', 'user', 'password', '2018-04-01 10:08:14', 'up', 'india', 0),
+(7, 'himani', 'himani@gmail.com', '9815022222', 'flat 204, tower 14, lotus boulevard', '201302', 'user', 'password', '2018-04-02 18:46:10', 'up', 'india', 0),
+(8, 'rks', 'rks@gmail.com', '9815038550', 'flat 204, tower 14, lotus boulevard', '201301', 'user', 'password', '2018-04-02 18:50:59', 'up', 'india', 0),
+(9, 'manas', 'manas@gmail.com', '9815048550', 'flat 204, tower 14, lotus boulevard', '201301', 'user', 'password', '2018-04-03 17:01:23', 'up', 'india', 0);
 
 --
 -- Indexes for dumped tables
@@ -241,7 +241,7 @@ ALTER TABLE `transaction_detail`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- Constraints for dumped tables
 --
