@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2018 at 08:04 PM
+-- Generation Time: Apr 05, 2018 at 05:00 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -109,10 +109,10 @@ INSERT INTO `medicine` (`id`, `description`, `name`, `company`, `form`, `dose`) 
 CREATE TABLE `transaction` (
   `id` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `state` enum('PENDING','RECEIVED','','') NOT NULL DEFAULT 'PENDING',
+  `state` enum('PENDING','RECEIVED') NOT NULL DEFAULT 'PENDING',
   `owner` int(11) NOT NULL,
   `recipient` int(11) DEFAULT NULL,
-  `received_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `received_time` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -120,9 +120,9 @@ CREATE TABLE `transaction` (
 --
 
 INSERT INTO `transaction` (`id`, `time`, `state`, `owner`, `recipient`, `received_time`) VALUES
-(79, '2018-04-02 18:49:05', 'RECEIVED', 3, NULL, '0000-00-00 00:00:00'),
 (80, '2018-04-02 18:50:00', 'RECEIVED', 7, NULL, '2018-04-03 18:02:28'),
-(81, '2018-04-02 18:51:17', 'RECEIVED', 8, NULL, '2018-04-03 18:00:55');
+(81, '2018-04-02 18:51:17', 'RECEIVED', 8, NULL, '2018-04-03 18:00:55'),
+(84, '2018-04-05 14:57:06', 'PENDING', 8, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -135,22 +135,21 @@ CREATE TABLE `transaction_detail` (
   `transaction` int(11) NOT NULL,
   `medicine` int(11) NOT NULL,
   `expiry` date DEFAULT NULL,
-  `quantity` int(11) NOT NULL DEFAULT '0'
+  `quantity` int(11) NOT NULL DEFAULT '0',
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `transaction_detail`
 --
 
-INSERT INTO `transaction_detail` (`id`, `transaction`, `medicine`, `expiry`, `quantity`) VALUES
-(11, 79, 3, '2018-03-02', 10),
-(12, 79, 5, '2018-03-02', 20),
-(13, 79, 10, '2018-03-02', 30),
-(14, 79, 20, '2018-03-02', 40),
-(15, 80, 7, '2018-03-02', 10),
-(16, 80, 16, '2018-03-02', 10),
-(17, 81, 7, '2018-03-02', 10),
-(18, 81, 16, '2018-03-02', 10);
+INSERT INTO `transaction_detail` (`id`, `transaction`, `medicine`, `expiry`, `quantity`, `time`) VALUES
+(15, 80, 7, '2018-03-02', 10, '2018-04-05 14:56:16'),
+(16, 80, 16, '2018-03-02', 10, '2018-04-05 14:56:16'),
+(17, 81, 7, '2018-03-02', 10, '2018-04-05 14:56:16'),
+(18, 81, 16, '2018-03-02', 10, '2018-04-05 14:56:16'),
+(23, 84, 7, '2018-03-02', 10, '2018-04-05 14:57:06'),
+(24, 84, 16, '2018-03-02', 10, '2018-04-05 14:57:06');
 
 -- --------------------------------------------------------
 
@@ -231,12 +230,12 @@ ALTER TABLE `medicine`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 --
 -- AUTO_INCREMENT for table `transaction_detail`
 --
 ALTER TABLE `transaction_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `users`
 --
