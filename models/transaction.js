@@ -34,17 +34,17 @@ function create (req, res) {
             return res.send({ 'status': 400, 'message': errorThrown });
         }
     }
-    dbConnection.getConnection(function(err, connection) {
-        connection.beginTransaction(function(err) {
-            if (err) return sendMessage(res);
-            connection.query('INSERT INTO transaction (`owner`) VALUES (?)', [req.session.user_id], function (err, results) {
-                if (err) {
-                    logger.info(err, __filename, null, req.originalUrl);
-                    connection.rollback(function() {
-                        return sendMessage(res);
-                    });
-                } else {
-                    const transactionId = results.insertId;
+    let transactionExist = false;
+    let transactionId;
+    dbConnection.query('SELECT * FROM transaction where `owner` = ? && state = "PENDING"', [req.session.user_id], function (err, results) {
+        if (err) return sendMessage(res);
+        if (results.length > 0) { 
+            transactionExist = true;
+            transactionId = results[0].id;
+        }
+        dbConnection.getConnection(function(err, connection) {
+            connection.beginTransaction(function(err) {
+                const callback = (err, results) => {
                     async.each(req.body.data.transaction, function(data, callback) {
                         connection.query('INSERT INTO transaction_detail (`transaction`, `medicine`, `quantity`, `expiry`) VALUES (?, ?, ?, ?)',
                         [transactionId, data.medicine_id, data.quantity, data.expiry], function (errInner, innerResult) {
@@ -71,10 +71,24 @@ function create (req, res) {
                             });
                         }
                     });
-                }
+                };
+                if (err) return sendMessage(res);
+                if (!transactionExist) {
+                    connection.query('INSERT INTO transaction (`owner`) VALUES (?)', [req.session.user_id], function(err, results) {
+                        if (err) {
+                            logger.info(err, __filename, null, req.originalUrl);
+                            connection.rollback(function() {
+                                return sendMessage(res);
+                            });
+                        } else {
+                            transactionId = results.insertId;
+                            callback();
+                        }
+                    });
+                } else callback();
             });
         });
-    })
+    });
 }
 
 function get(req, res) {
